@@ -172,6 +172,7 @@ def main_menu(stdscr):
         else:
             prompt = "Action: {}".format(inprompt)
         stdscr.addstr(height-1, 0, prompt)
+        
 
 
         stdscr.refresh()
