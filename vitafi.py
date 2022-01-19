@@ -30,7 +30,7 @@ def main_menu(stdscr):
         return delta
 
     def save(str):
-        file = open("vitafi_save.txt","a")
+        file = open("./vitafi_save.txt","a")
         file.write(str + "\n")
         file.close()
 
