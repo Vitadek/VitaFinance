@@ -10,6 +10,7 @@ def main_menu(stdscr):
         stdscr.addstr(height - 1, 0, prompt)
         tick = (stdscr.getstr(height-1, len(prompt), 15)).decode('utf-8') #Changing binary to string
         curses.noecho()
+        tick = tick.upper()
         price_arr.append(getPrice(tick))
         return tick
 
@@ -21,7 +22,7 @@ def main_menu(stdscr):
 
     def updatePrices():
         for x in range(len(price_arr)):
-            price_arr[x] = getPrice(tick_arr[x])
+            price_arr[x] = getPrice(tick_arr[x][1:]) #tick_arr[x][1:] will slice off the '$'
 
     def timer():
         later_time = datetime.now().strftime("%M")
@@ -52,12 +53,13 @@ def main_menu(stdscr):
         stdscr.clear()
         selection = ""
         height, width = stdscr.getmaxyx()
-        start_y = int((height // 2) - 2)
+        start_y = int((height // 3) - 3)
         prompt = "Current Selection: {}".format(selection)
         inprompt = ""
         ticker = "Add Ticker"[:width-1]
         analyze = "Save List"[:width-1]
-        start_x_ticker, start_x_analyze = 0,0
+        refresh = "Refresh List"[:width-1]
+        start_x_ticker, start_x_analyze, start_x_refresh = 0,0,0
 
         #Menu scripts for Ticks
         m_delete = "Delete"
@@ -106,15 +108,20 @@ def main_menu(stdscr):
 
         c_down = "Prices will update in {} minutes, delta: {}".format(2 - delta, delta)
         stdscr.addstr(0, (width - len(c_down)), c_down) #timer
+        
+        # Main Nav
+        
+        ## Add Ticker
         if y_pos == 0 and x_pos == 0:
             stdscr.addstr(start_y, start_x_ticker, ticker, curses.A_STANDOUT)
             inprompt = "Add a Ticker!"
             if k == 10: # if input is enter
                 newTick = getTicker()
-                tick_arr.append(newTick)
+                tick_arr.append('$' + newTick)
         else:
             stdscr.addstr(start_y, start_x_ticker, ticker)
-
+        
+        ## Save List
         if y_pos == 1 and x_pos == 0:
             stdscr.addstr(start_y + 1, start_x_analyze, analyze, curses.A_STANDOUT)
             inprompt = "Save Ticker List!"
@@ -125,6 +132,15 @@ def main_menu(stdscr):
                     inprompt = "%{} saved...".format((x/len(tick_arr[x])) * 10)
         else:
             stdscr.addstr(start_y + 1, start_x_analyze, analyze)
+        
+        ## Refresh List
+        if y_pos == 2 and x_pos == 0:
+            stdscr.addstr(start_y + 2 , start_x_refresh, refresh, curses.A_STANDOUT)
+            inprompt = "Refresh List!"
+            if k == 10:
+                updatePrices()
+        else:
+            stdscr.addstr(start_y + 2, start_x_refresh, refresh)
 
 
         if len(tick_arr) > 0:
