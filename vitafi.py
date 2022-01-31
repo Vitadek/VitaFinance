@@ -66,6 +66,14 @@ def main_menu(stdscr):
 
 
         #Controls
+        controls ={
+            "DOWN": curses.KEY_DOWN,
+            "UP": curses.KEY_UP,
+            "LEFT": curses.KEY_LEFT,
+            "RIGHT": curses.KEY_RIGHT,
+            "ENTER": 10
+        }
+        
         if k == curses.KEY_DOWN:
             y_pos = y_pos + 1
             if menu == True:
